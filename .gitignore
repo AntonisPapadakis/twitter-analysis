@@ -1,0 +1,5 @@
+venv
+politicians2019
+.vscode
+*.json
+*.edges
