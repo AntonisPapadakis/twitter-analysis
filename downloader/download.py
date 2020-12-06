@@ -6,28 +6,26 @@ from datetime import datetime
 
 import requests
 import twitter
-import urllib3
+import click
 
 
-def main():
-    if len(sys.argv) > 1 and sys.argv[1] == '--help':
-        print("""
-            Exactly 2 arguments needed.
-            1st: JSON file with Twitter API credentials.
-                    Keys should be: "consumer_key", "consumer_secret", "access_token_key", "access_token_secret"
-            2nd: txt file with the usernames of all the accounts whose followers you want to download.
-                    Each username should be in a seperate line   
-                """)
-        return
-    if len(sys.argv) != 3:
-        print('Exactly 2 arguments needed. Use "tool.py --help" for more info')
-        return
+@click.command()
+@click.argument('credentials', type=click.Path(exists=True))
+@click.argument('accounts', type=click.Path(exists=True))
+@click.option('--dest', default='', help='where the edges file will be stored')
+def main(credentials, accounts, dest):
+    """
+    A tool that downloads the ids of followers of twitter accounts and stores them
+    in a csv file in the form of graph edges. Provide 2 files:
 
-    credentials = sys.argv[1]
-    accounts_file_path = sys.argv[2]
+    CREDENTIALS: JSON file with twitter API credentials ("consumer_key", "consumer_secret", "access_token_key", "access_token_secret")
+
+    ACCOUNTS: txt file with the usernames of all the accounts whose followers you want to download. 
+    Each username should be in a seperate line
+    """
 
     api = auth(credentials)
-    accounts_list = read(accounts_file_path)
+    accounts_list = read(accounts)
 
     date = datetime.now()
     file_name = str(date.year) + date.strftime('%b') + '.edges'
@@ -35,14 +33,13 @@ def main():
 
     for account in accounts_list:
         followers = download(account, api)
-        with open(file_name, mode='a') as f:
+        with open(dest+file_name, mode='a') as f:
             for follower in followers:
                 f.write(f"{follower},{account}\n")
         count += 1
         print(count)
 
     print('All done')
-    # print("--- %s seconds ---" % (time.time() - start_time))
 
 
 def auth(credentials):
@@ -57,7 +54,7 @@ def auth(credentials):
         api.VerifyCredentials()
         return api
     except twitter.error.TwitterError as e:
-        print('Wrong credentials:', e)
+        print('Authentication failed:', e)
         exit(-1)
 
 
@@ -73,7 +70,6 @@ def download(account, api):
         try:
             print(account)
             followers = api.GetFollowerIDs(screen_name=account)
-        # except (ConnectionResetError, requests.exceptions.ConnectionError, urllib3.exceptions.ProtocolError):
         except (requests.exceptions.ConnectionError):
             print(f'error occured at {account}')
             time.sleep(600)
