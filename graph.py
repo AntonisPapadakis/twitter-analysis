@@ -1,8 +1,24 @@
 import os
 import networkx as nx
 import community as community_louvain
-from networkx.algorithms import bipartite
-from networkx.algorithms import community
+from networkx.algorithms import bipartite, community
+
+
+def main():
+    G = nx.read_edgelist('edges/2020Nov.edges', delimiter=',')
+    # G = nx.read_edgelist('edges/noi.edges', delimiter=',')
+
+    politicians = bipartite.sets(G)[1]
+
+    # P = bipartite.overlap_weighted_projected_graph(
+    #     G, politicians, jaccard=False)
+    P = bipartite.overlap_weighted_projected_graph(
+        G, politicians, jaccard=False)
+
+    louv = louvain(P, 0.95, 5)
+
+    write(louv)
+    print(evaluate(P, louv))
 
 
 def louvain(P, res=1.0, seed=None):
@@ -28,7 +44,7 @@ def write(l):
             f.write(' '.join(line) + '\n')
 
 
-def evaluate(l):
+def evaluate(P, l):
     part = partition(l)
     metrics = {'Communities': max(l.values())+1,
                'Modularity': community.modularity(P, part),
@@ -38,13 +54,5 @@ def evaluate(l):
     return metrics
 
 
-G = nx.read_edgelist('new.edges', delimiter=',')
-
-politicians = bipartite.sets(G)[1]
-
-P = bipartite.overlap_weighted_projected_graph(G, politicians, jaccard=False)
-
-louv = louvain(P, 0.95, 5)
-
-write(louv)
-print(evaluate(louv))
+if __name__ == '__main__':
+    main()
