@@ -4,4 +4,4 @@ politicians2020
 *.json
 *.edges
 __pycache__
-followers.egg-info
+*.egg-info
