@@ -6,12 +6,9 @@ from networkx.algorithms import bipartite, community
 
 def main():
     G = nx.read_edgelist('edges/2020Nov.edges', delimiter=',')
-    # G = nx.read_edgelist('edges/noi.edges', delimiter=',')
 
     politicians = bipartite.sets(G)[1]
 
-    # P = bipartite.overlap_weighted_projected_graph(
-    #     G, politicians, jaccard=False)
     P = bipartite.overlap_weighted_projected_graph(
         G, politicians, jaccard=False)
 
