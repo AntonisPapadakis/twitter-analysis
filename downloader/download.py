@@ -1,19 +1,17 @@
 import json
-import os
-import sys
 import time
 from datetime import datetime
 
+import click
 import requests
 import twitter
-import click
 
 
 @click.command()
-@click.argument('credentials', type=click.Path(exists=True))
 @click.argument('accounts', type=click.Path(exists=True))
+@click.argument('credentials', type=click.Path(exists=True))
 @click.option('--dest', default='', help='where the edges file will be stored')
-def main(credentials, accounts, dest):
+def main(accounts, credentials, dest):
     """
     A tool that downloads the ids of followers of twitter accounts and stores them
     in a csv file in the form of graph edges. Provide 2 files:

@@ -4,4 +4,3 @@ politicians2020
 *.json
 *.edges
 __pycache__
-*.egg-info
