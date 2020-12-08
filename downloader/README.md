@@ -7,5 +7,9 @@
 3. Εκτελούμε την εντολή pip install --editable .
 ## Χρήση
 Η εντολή που εκτελούμε κατά την εγκατάσταση εγκαθιστά τις απαραίτητες βιβλιοθήκες και μας επιτρέπει να 
-τρέχουμε το πρόγραμμα σαν CLI εφαρμογή ως εξής:
-download Accounts_File Credentials_File --dest File_Destination
+τρέχουμε το πρόγραμμα σαν CLI εφαρμογή ως εξής:\
+download ACCOUNTS_FILE CREDENTIALS_FILE --dest FILE_DESTINATION
+## Requirements
+python-twitter
+requests
+click
