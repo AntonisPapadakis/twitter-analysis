@@ -1,10 +1,10 @@
-import tweepy
+import twitter
 import json
 import os
 
 
 def main():
-    api = tweepy_auth()
+    api = auth()
 
     path = './politicians2020/'
     ids = get_ids(path, api)
@@ -13,12 +13,14 @@ def main():
     filter_dataset(dataset, ids.values())
 
 
-def tweepy_auth():
+def auth():
     with open("twitter_credentials.json", "r") as file:
         creds = json.load(file)
-    auth = tweepy.OAuthHandler(creds["CONSUMER_KEY"], creds["CONSUMER_SECRET"])
-    auth.set_access_token(creds["ACCESS_TOKEN"], creds["ACCESS_SECRET"])
-    api = tweepy.API(auth, wait_on_rate_limit=True)
+    api = twitter.Api(consumer_key=creds["CONSUMER_KEY"],
+                      consumer_secret=creds["CONSUMER_SECRET"],
+                      access_token_key=creds["ACCESS_TOKEN"],
+                      access_token_secret=creds["ACCESS_SECRET"],
+                      sleep_on_rate_limit=True)
     return api
 
 
@@ -31,9 +33,7 @@ def get_ids(path, api):
             usernames.extend([x for x in f.read().splitlines()])
 
     for politician in usernames:
-        # ids.append(api.get_user(politician).id_str)
-        ids[politician] = api.get_user(politician).id_str
-
+        ids[politician] = api.GetUser(screen_name=politician).id_str
     return ids
 
 
