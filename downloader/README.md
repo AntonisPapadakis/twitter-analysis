@@ -10,6 +10,6 @@
 τρέχουμε το πρόγραμμα σαν CLI εφαρμογή ως εξής:\
 download ACCOUNTS_FILE CREDENTIALS_FILE --dest FILE_DESTINATION
 ## Requirements
-python-twitter
-requests
+python-twitter/
+requests/
 click
