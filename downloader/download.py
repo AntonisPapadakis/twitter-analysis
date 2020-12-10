@@ -27,15 +27,13 @@ def main(accounts, credentials, dest):
 
     date = datetime.now()
     file_name = str(date.year) + date.strftime('%b') + '.edges'
-    count = 0
 
     for account in accounts_list:
         followers = download(account, api)
         with open(dest+file_name, mode='a') as f:
             for follower in followers:
                 f.write(f"{follower},{account}\n")
-        count += 1
-        print(count)
+        print(account)
 
     print('All done')
 
@@ -57,16 +55,14 @@ def auth(credentials):
 
 
 def read(file):
-    accounts_list = list()
     with open(file, mode='r') as f:
-        accounts_list.extend([x for x in f.read().splitlines()])
+        accounts_list = [x for x in f.read().splitlines()]
     return accounts_list
 
 
 def download(account, api):
     while True:
         try:
-            print(account)
             followers = api.GetFollowerIDs(screen_name=account)
         except (requests.exceptions.ConnectionError):
             print(f'error occured at {account}')
@@ -74,7 +70,3 @@ def download(account, api):
         else:
             break
     return followers
-
-
-if __name__ == '__main__':
-    main()
